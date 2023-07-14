@@ -1,7 +1,7 @@
 from reportlab.pdfgen import canvas
 from PIL import Image
 import qrcode
-from PyPDF2 import PdfMerger
+from PyPDF2 import PdfFileMerger
 import streamlit as st
 import base64
 import os
@@ -15,7 +15,7 @@ for filename in os.listdir(folder_path):
         os.remove(file_path)  # 删除文件
 
 
-merger = PdfMerger()
+merger = PdfFileMerger()
 
 begin = st.text_input("begin:")
 final = st.text_input("final:")
