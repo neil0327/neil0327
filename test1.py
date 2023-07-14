@@ -6,7 +6,7 @@ import streamlit as st
 import base64
 import os
 
-folder_path = 'test0712'
+folder_path = '/app/neil0327/neil0327/test0712'
 
 # 遍历文件夹中的所有文件
 for filename in os.listdir(folder_path):
