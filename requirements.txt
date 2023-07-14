@@ -1,2 +1,2 @@
-reportlab
-qrcode
+reportlab==3.6.1
+qrcode==7.3
