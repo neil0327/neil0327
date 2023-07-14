@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 name: My Workflow
 
 on:
@@ -28,3 +29,35 @@ jobs:
         # Add build commands here
         echo "Building..."
  
+=======
+name: My Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install reportlab
+
+    - name: Build
+      run: |
+        # Add build commands here
+        echo "Building..."
+ 
+>>>>>>> 4ba9da9aa951a6b50ef56898fe0eef31bf1beab1
