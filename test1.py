@@ -35,10 +35,10 @@ elif begin_prefix == '45':
 elif begin_prefix == '46':
     ModelName = "MVR"
 else:
-    print("wrong")
+    #print("wrong")
     tp=1
 
-print("ModelName:", ModelName)
+#print("ModelName:", ModelName)
 
 
 begin_num = int(begin) if begin.isdigit() else 0
@@ -48,7 +48,7 @@ i=0
 
 # 创建PDF文件对象
 while begin_num+i<=final_num and tp==0 :
-    print(begin_num+i)
+    #print(begin_num+i)
     
     qr = qrcode.QRCode(
         version=1,  # 控制QR码的大小，范围为1到40
