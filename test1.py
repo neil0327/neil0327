@@ -109,7 +109,7 @@ while begin_num+i<=final_num and tp==0 :
     # 写入文本内容
     text_x = x
     text_y = y - 40  # 将文本下移20个单位
-    pdf.drawString(text_x, text_y, "Congratulation on")
+    pdf.drawString(text_x, text_y, "Congratulations on")
     pdf.drawString(text_x, text_y - 50, "your new MediCapture")
     pdf.drawString(text_x, text_y - 50*2, ModelName)
 
