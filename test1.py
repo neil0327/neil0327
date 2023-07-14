@@ -174,7 +174,7 @@ if st.button('Generate Download Link'):
         # Generate download link
         href = f'<a href="data:application/pdf;base64,{pdf_base64}" download="{begin}to{final}.pdf">Click here to download PDF</a>'
         st.markdown(href, unsafe_allow_html=True)
-        st.snow()
+
 import os
 if begin_num==0 and final_num==0:
     os.remove("to.pdf")
