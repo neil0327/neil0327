@@ -6,13 +6,15 @@ import streamlit as st
 import base64
 import os
 
-folder_path = r'C:\Users\neil9\Desktop\test0712' 
+folder_path = 'test0712'
 
 # 遍历文件夹中的所有文件
 for filename in os.listdir(folder_path):
-    if filename.endswith('.pdf'):  # 仅处理PDF文件
+    # 处理 PDF 文件
+    if filename.endswith('.pdf'):
         file_path = os.path.join(folder_path, filename)
         os.remove(file_path)  # 删除文件
+
 
 
 merger = PdfFileMerger()
