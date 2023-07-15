@@ -172,6 +172,7 @@ try:
     # Create a download button
     st.write("")
     if st.button('Generate'):
+        st.snow()
         temp1=input.split(',')
         for i in temp1:
             if len(i)==8 and i.isdigit() and i[:2] in first_list:
