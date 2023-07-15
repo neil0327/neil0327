@@ -3,7 +3,6 @@ from PIL import Image
 import qrcode
 from PyPDF2 import PdfFileMerger
 import streamlit as st
-import components.html as components_html
 import base64
 import os
 first_list=['42','44','45','46']
@@ -173,19 +172,7 @@ try:
     # Create a download button
     st.write("")
     if st.button('Generate'):
-        snowstorm_script = """
-        <script src="https://unpkg.com/snowstorm@1.44.3/snowstorm.js"></script>
-        """
-
-        # 在 Streamlit 中插入 HTML 和 JavaScript 代码
-        components_html(snowstorm_script)
-
-        # 在 Streamlit 中显示其他内容
-        st.title("Snowstorm Demo")
-        st.write("Welcome to the Snowstorm Demo!")
-        # ... 其他 Streamlit 内容
-        
-        # 注意：确保你在 Streamlit 应用程序中正确引入了 `components.html` 函数，它用于插入自定义的 HTML 代码。
+        st.snow()
         temp1=input.split(',')
         for i in temp1:
             if len(i)==8 and i.isdigit() and i[:2] in first_list:
