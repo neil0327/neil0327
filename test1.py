@@ -5,7 +5,7 @@ from PyPDF2 import PdfFileMerger
 import streamlit as st
 import base64
 import os
-first_list=['42','44','45','46']
+first_list=['42','44','45','46','01','02']
 folder_path = 'folder'
 try:
     # 遍历文件夹中的所有文件
@@ -16,29 +16,53 @@ try:
             os.remove(file_path)  # 删除文件
     
     st.title('Registration QR codes')
-    input_i = st.text_input("Input serial numbers (e.g. 42220001,44230010-44230020,45210001)")
+    input_i = st.text_input("Input serial numbers or UDI (e.g. 42220001,44230010-44230020,45210001)")
     input=input_i.replace(" ", "")
     def create_pdf(begin,final):
 
         merger = PdfFileMerger()
-        # 提取前两位数字
-        begin_prefix = begin[:2]
-        final_prefix = final[:2]
-        ModelName = ""
         tp=0
-    
-        if begin_prefix == '42':
-            ModelName = "MVR Lite"
-        elif begin_prefix == '44':
-            ModelName = "MVR Pro"
-        elif begin_prefix == '45':
-            ModelName = "MVC Pro SDI to HDMI"
-        elif begin_prefix == '46':
-            ModelName = "MVR"
-        else:
-            #print("wrong")
-            tp=1
-    
+        mode=0
+        ModelName = ""
+        if len(begin)==8:
+            mode=1
+            begin_prefix = begin[:2]
+            
+            if begin_prefix == '42':
+                ModelName = "MVR Lite"
+            elif begin_prefix == '44':
+                ModelName = "MVR Pro"
+            elif begin_prefix == '45':
+                ModelName = "MVC Pro SDI to HDMI"
+            elif begin_prefix == '46':
+                ModelName = "MVR"
+            elif begin_prefix == '01':
+                ModelName = "MTS101"
+            elif begin_prefix == '02':
+                ModelName = "MTS156"
+            else:
+                #print("wrong")
+                tp=1
+        elif len(begin)>=29:
+            mode=2
+            begin_prefix = begin[13:16]
+            if begin_prefix == '057':
+                ModelName = "MTS156"
+            elif begin_prefix == '286':
+                ModelName = "MTS101"
+            elif begin_prefix == '132':
+                ModelName = "MVR"
+            elif begin_prefix == '156':
+                ModelName = "MVC Pro SDI to HDMI"
+            elif begin_prefix == '101':
+                ModelName = "MVR Pro"
+            elif begin_prefix == '033':
+                ModelName = "MVR Lite"
+            else:
+                tp=1
+        elif len(begin)==3:
+            mode=3
+            ModelName="MTS101"
         #print("ModelName:", ModelName)
     
     
@@ -57,7 +81,30 @@ try:
                 box_size=10,  # 控制每个“盒子”的像素数
                 border=4,  # 控制边框的盒子数
             )
-            data = f"www.medicapture.com/register/?serial={begin_num+i}"
+            if mode==1:
+                data = f"www.medicapture.com/register/?serial={begin_num+i}"
+                if begin_prefix == '01' or begin_prefix == '02':
+                    data = f"www.medicapture.com/register/?serial=0{begin_num+i}"
+                else:
+                    data = f"www.medicapture.com/register/?serial={begin_num+i}"
+            elif mode==2:
+                data = f"www.medicapture.com/register/?serial=0{begin_num+i}"
+            elif mode==3:
+                if begin_num+i<10:
+                    data = f"www.medicapture.com/register/?serial=00{begin_num+i}"
+                elif begin_num+i<100:
+                    data = f"www.medicapture.com/register/?serial=0{begin_num+i}"
+                elif begin_num+i<1000:
+                    data = f"www.medicapture.com/register/?serial={begin_num+i}"
+
+
+
+
+
+
+
+
+            
             qr.add_data(data)
             qr.make(fit=True)
             # 生成图像
@@ -69,7 +116,7 @@ try:
             pdf = canvas.Canvas(f"{begin_num+i}.pdf")
         
             # 设置字体样式和大小
-            pdf.setFont("Times-Roman", 45)
+            pdf.setFont("Helvetica", 45)
         
             # 打开图像
             image = Image.open("medicapture-android-chrome-favicon_512x512.png")
@@ -111,15 +158,30 @@ try:
             pdf.drawString(text_x, text_y - 50, "your new MediCapture")
             pdf.drawString(text_x, text_y - 50*2, ModelName)
         
-            pdf.setFont("Times-Roman", 35)
+            pdf.setFont("Helvetica", 32)
             pdf.drawString(text_x, text_y - 50*5, "Unlock 2 Months of Extra Warranty")
         
-            pdf.setFont("Times-Roman", 15)
+            pdf.setFont("Helvetica", 13)
             pdf.drawString(text_x, text_y - 50*6.5, "Scan the QR Code to register your new")
             pdf.drawString(text_x, text_y - 50*6.5-20, f"MediCapture {ModelName}")
             pdf.drawString(text_x, text_y - 50*6.5-20*3, "or browse to the link below:")
-            pdf.drawString(text_x, text_y - 50*6.5-20*4, f"www.medicapture.com/register/?serial={begin_num+i}")
-        
+            if mode==1:
+                if begin_prefix == '01' or begin_prefix == '02':
+                    pdf.drawString(text_x, text_y - 50*6.5-20*4, f"www.medicapture.com/register/?serial=0{begin_num+i}")
+                else:
+                    pdf.drawString(text_x, text_y - 50*6.5-20*4, f"www.medicapture.com/register/?serial={begin_num+i}")
+                
+            elif mode==2:
+                pdf.drawString(text_x, text_y - 50*6.5-20*4, f"www.medicapture.com/register/?serial=")
+                pdf.drawString(text_x, text_y - 50*6.5-20*5, f"0{begin_num+i}")
+            elif mode==3:
+                if begin_num+i<10:
+                    pdf.drawString(text_x, text_y - 50*6.5-20*4, f"www.medicapture.com/register/?serial=00{begin_num+i}")
+                elif begin_num+i<100:
+                    pdf.drawString(text_x, text_y - 50*6.5-20*4, f"www.medicapture.com/register/?serial=0{begin_num+i}")
+                elif begin_num+i<1000:
+                    pdf.drawString(text_x, text_y - 50*6.5-20*4, f"www.medicapture.com/register/?serial={begin_num+i}")
+            
             pdf.drawImage("bottom.png", 100, 0, 500, 50)
         
         
@@ -174,7 +236,7 @@ try:
     if st.button('Generate'):
         temp1=input.split(',')
         for i in temp1:
-            if len(i)==8 and i.isdigit() and i[:2] in first_list:
+            if (len(i)==8 or len(i)>=29 or len(i)==3) and i.isdigit() and ((i[:2] in first_list and len(i)==8) or i[0:13]=='0100859151005' or len(i)==3):
                 begin=i
                 final=i
                 begin_list.append(begin)
@@ -182,7 +244,7 @@ try:
                 pdf_list.append(create_pdf(begin,final))
             elif '-' in i:
                 i_split=i.split('-')
-                if len(i_split) == 2 and i_split[0].isdigit() and len(i_split[0]) == 8 and i_split[1].isdigit() and len(i_split[1]) == 8 and i_split[0][:4]==i_split[1][:4] and i_split[0][:2] in first_list:
+                if len(i_split) == 2 and i_split[0].isdigit() and i_split[1].isdigit() and ((len(i_split[0]) == 8 or len(i_split[0])>=29) and (len(i_split[1]) == 8 or len(i_split[1])>=29) and ((i_split[0][:4]==i_split[1][:4] and i_split[0][:2] in first_list and len(i_split[0])==8) or i_split[0][0:13]=='0100859151005') or (len(i_split[0])==3 and len(i_split[1])==3)):
                     if int(i_split[1])-int(i_split[0])<=200 and int(i_split[1])-int(i_split[0])>0:
                         begin=i_split[0]
                         final=i_split[1]
@@ -212,3 +274,4 @@ try:
                 st.markdown(href, unsafe_allow_html=True)
 except Exception as e:
     st.error(e)
+
