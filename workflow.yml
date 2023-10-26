@@ -23,7 +23,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Build
+    - name: Build PDFs
       run: |
-        # Add build commands here
-        echo "Building..."
+        python generate_pdfs.py  # Replace with your actual script filename
