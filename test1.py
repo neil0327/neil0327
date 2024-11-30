@@ -20,7 +20,7 @@ try:
     input=input_i.replace(" ", "")
     def create_pdf(begin,final):
 
-        merger = PdfFileMerger()
+        merger = PdfMerger()
         tp=0
         mode=0
         ModelName = ""
